@@ -14,7 +14,7 @@ pipeline {
                     echo "Building Docker image from Dockerfile"
                     // คำสั่ง build Docker image
                     sh """
-                        docker build -t ${IMAGE_NAME}:${TAG} .
+                        sudo docker build -t ${IMAGE_NAME}:${TAG} .
                     """
                 }
             }
