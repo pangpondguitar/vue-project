@@ -18,5 +18,8 @@ RUN npm install
 # build app for production with minification
 RUN npm run build
 
-EXPOSE 8080
-CMD [ "http-server", "dist" ]
+# Step 2: Use nginx to serve build folder
+FROM nginx:alpine
+COPY --from=builder /app/build /usr/share/nginx/html
+EXPOSE 8080  
+CMD ["nginx", "-g", "daemon off;"]
