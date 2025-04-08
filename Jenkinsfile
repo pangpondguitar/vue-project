@@ -43,7 +43,7 @@ pipeline {
                 script {
                     echo "Running Docker container"
                     sh """
-                        docker run -d --name vue-project -p 3000:8080 ${IMAGE_NAME}:${TAG}
+                        docker run -d --name vue-project -p 3000:80 ${IMAGE_NAME}:${TAG}
                     """
                     // ตรวจสอบว่า container รันแล้ว
                     sh 'docker ps'
