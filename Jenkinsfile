@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:24.0.7-cli'  // หรือ docker:dind
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
 
     environment {
         IMAGE_NAME = 'vue-project-image-test'
@@ -12,15 +7,39 @@ pipeline {
     }
 
     stages {
-        stage('Build Docker Image') {
+        stage('Checkout Code') {
             steps {
-                sh "docker build -t ${IMAGE_NAME}:${TAG} ."
+                checkout scm
             }
         }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo "Building Docker image from Dockerfile"
+                    sh 'ls -la' // debug: ดูว่าไฟล์อยู่ไหม
+                    sh """
+                        docker build -t ${IMAGE_NAME}:${TAG} .
+                    """
+                }
+            }
+        }
+
         stage('Run Docker Container') {
             steps {
-                sh "docker run -d --name vue-project-test -p 3000:8080 ${IMAGE_NAME}:${TAG}"
+                script {
+                    echo "Running Docker container"
+                    sh """
+                        docker run -d --name vue-project -p 3000:8080 ${IMAGE_NAME}:${TAG}
+                    """
+                }
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished.'
         }
     }
 }
