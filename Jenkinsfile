@@ -17,9 +17,22 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker image from Dockerfile"
-                    sh 'ls -la' // debug: ดูว่าไฟล์อยู่ไหม
+                    // ตรวจสอบว่าไฟล์ถูกเช็คเอาต์มาแล้ว
+                    sh 'ls -la'
                     sh """
                         docker build -t ${IMAGE_NAME}:${TAG} .
+                    """
+                }
+            }
+        }
+
+        stage('Remove Old Container (if exists)') {
+            steps {
+                script {
+                    echo "Removing existing Docker container (if any)"
+                    // ลบ container เก่าถ้ามี
+                    sh """
+                        docker rm -f vue-project || true
                     """
                 }
             }
@@ -32,6 +45,8 @@ pipeline {
                     sh """
                         docker run -d --name vue-project -p 3000:8080 ${IMAGE_NAME}:${TAG}
                     """
+                    // ตรวจสอบว่า container รันแล้ว
+                    sh 'docker ps'
                 }
             }
         }
