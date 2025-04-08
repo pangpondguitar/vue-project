@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         // ตั้งชื่อ image และ tag
-        IMAGE_NAME = 'vue-project-image'
+        IMAGE_NAME = 'vue-project-image-test'
         TAG = 'latest'
     }
     
